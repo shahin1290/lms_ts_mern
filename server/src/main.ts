@@ -1,14 +1,32 @@
+import { CORS_ORIGIN } from "./constants";
 import express from "express";
+import cookieParser from "cookie-parser";
 import { connectToDatabase, disconnectFromDatabase } from "./utils/database";
 import logger from "./utils/logger";
+import cors from "cors";
+import helmet from "helmet";
+import userRoute from "./modules/user/user.route";
 
 const PORT = process.env.PORT || 4000;
 
 const app = express();
 
+app.use(cookieParser());
+app.use(express.json());
+app.use(
+  cors({
+    origin: CORS_ORIGIN,
+    credentials: true,
+  })
+);
+
+app.use(helmet());
+
+app.use("/api/users", userRoute);
+
 const server = app.listen(PORT, async () => {
   await connectToDatabase();
-  logger.info(`Server listenint at http://localhost: ${PORT}`);
+  logger.info(`Server listenint at http://localhost:${PORT}`);
 });
 
 const signals = ["SIGTERM", "SIGINT"];
