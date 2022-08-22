@@ -9,9 +9,6 @@ export async function registerUserHandler(
 ) {
   const { username, email, password } = req.body;
 
-  console.log(req.body);
-  
-
   try {
     await createUser({ username, email, password });
 
